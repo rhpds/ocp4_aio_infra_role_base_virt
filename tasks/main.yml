@@ -4,4 +4,4 @@
 
 - name: Setting up base virt for SNO
   import_tasks: base_virt_sno.yml
-  when: deploy_type == 'sno-iso' or deploy_type == 'sno-ai'
+  when: deploy_type == 'sno'

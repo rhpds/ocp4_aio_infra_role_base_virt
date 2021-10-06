@@ -272,7 +272,7 @@
   with_items:  [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
   when:
     - firewalld_avail.rc == 4
-    - deploy_type == "ipi" or deploy_type == "sno-iso"
+    - deploy_type == "ipi" or deploy_type == "sno"
 
 - name: Enable iptables ports for IPI deployments
   ansible.builtin.iptables:

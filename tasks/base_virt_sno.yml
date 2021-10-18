@@ -238,13 +238,13 @@
 
 - name: Download OpenShift Client
   ansible.builtin.get_url:
-    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ ocp_version }}/openshift-client-linux.tar.gz
+    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ ocp4_aio_ocp_version }}/openshift-client-linux.tar.gz
     dest: /root
     mode: 0644
 
 - name: Download OpenShift Installer
   ansible.builtin.get_url:
-    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ ocp_version }}/openshift-install-linux.tar.gz
+    url: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ ocp4_aio_ocp_version }}/openshift-install-linux.tar.gz
     dest: /root
     mode: 0644
 

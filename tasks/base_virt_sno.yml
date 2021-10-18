@@ -84,7 +84,7 @@
     --boot hd --noautoconsole --vnc --name ocp4-bastion --noreboot
   when:
     - bastion_defined.rc == 1
-    - deploy_type == "sno"
+    - ocp4_aio_deploy_type == "sno"
 
 - name: Check if firewalld is available
   ansible.builtin.command: systemctl status firewalld

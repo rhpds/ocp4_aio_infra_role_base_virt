@@ -402,7 +402,7 @@
   ansible.builtin.command:
     cmd: "virsh setmaxmem ocp4-{{ item.key }} 33554415 --config"
   with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_eploy_compact']
+  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
 
 - name: Update master memory for compact mode
   ansible.builtin.command:

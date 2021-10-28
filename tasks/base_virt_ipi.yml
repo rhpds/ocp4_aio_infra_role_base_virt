@@ -305,6 +305,54 @@
     to_destination: 192.168.123.100:9001
   when: firewalld_avail.rc == 4
 
+- name: Forward port 3128 to bastion:3128 with iptables
+  ansible.builtin.iptables:
+    action: insert
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    match: tcp
+    destination_port: "3128"
+    jump: DNAT
+    to_destination: 192.168.123.100:3128
+  when: firewalld_avail.rc == 4
+
+- name: Forward port 80 to apps_vip:80 with iptables
+  ansible.builtin.iptables:
+    action: insert
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    match: tcp
+    destination_port: "80"
+    jump: DNAT
+    to_destination: 192.168.123.11:80
+  when: firewalld_avail.rc == 4
+
+  - name: Forward port 443 to apps_vip:443 with iptables
+  ansible.builtin.iptables:
+    action: insert
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    match: tcp
+    destination_port: "443"
+    jump: DNAT
+    to_destination: 192.168.123.11:443
+  when: firewalld_avail.rc == 4
+
+- name: Forward port 6443 to api_vip:6443 with iptables
+  ansible.builtin.iptables:
+    action: insert
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    match: tcp
+    destination_port: "6443"
+    jump: DNAT
+    to_destination: 192.168.123.10:6443
+  when: firewalld_avail.rc == 4
+
 - name: Enable port 8000 on host with iptables
   ansible.builtin.iptables:
     chain: FORWARD

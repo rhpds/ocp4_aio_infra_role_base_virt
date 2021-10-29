@@ -329,7 +329,7 @@
     to_destination: 192.168.123.11:80
   when: firewalld_avail.rc == 4
 
-  - name: Forward port 443 to apps_vip:443 with iptables
+- name: Forward port 443 to apps_vip:443 with iptables
   ansible.builtin.iptables:
     action: insert
     table: nat

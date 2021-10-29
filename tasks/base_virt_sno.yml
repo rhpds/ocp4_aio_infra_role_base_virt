@@ -142,6 +142,12 @@
   when:
     - firewalld_avail.rc == 4
 
+- name: create default libvirt forward rules
+  ansible.builtin.iptables:
+    chain: "{{ item }}"
+    policy: ACCEPT
+  with_items: [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
+
 - name: Enable iptables ports for IPI deployments
   ansible.builtin.iptables:
     chain: LIBVIRT_INP

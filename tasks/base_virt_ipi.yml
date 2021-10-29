@@ -274,11 +274,25 @@
     - firewalld_avail.rc == 4
     - ocp4_aio_deploy_type == "ipi" or ocp4_aio_deploy_type == "sno"
 
-- name: create default libvirt forward rules
+- name: create default libvirt forward out rules
   ansible.builtin.iptables:
-    chain: "{{ item }}"
-    policy: ACCEPT
-  with_items: [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
+    chain: LIBVIRT_FWO
+    protocol: all
+    source: 192.168.123.0
+    destination: 0.0.0.0
+    jump: ACCEPT
+    action: insert
+    rule_num: 1
+
+- name: create default libvirt forward in rules
+  ansible.builtin.iptables:
+    chain: LIBVIRT_FWI
+    protocol: all
+    source: 0.0.0.0
+    destination: 192.168.123.0
+    jump: ACCEPT
+    action: insert
+    rule_num: 1
 
 - name: Enable iptables ports for IPI deployments
   ansible.builtin.iptables:
@@ -306,6 +320,7 @@
     chain: PREROUTING
     protocol: tcp
     match: tcp
+    destination: "{{ aio_host_ip_address }}"
     destination_port: "9001"
     jump: DNAT
     to_destination: 192.168.123.100:9001
@@ -318,6 +333,7 @@
     chain: PREROUTING
     protocol: tcp
     match: tcp
+    destination: "{{ aio_host_ip_address }}"
     destination_port: "3128"
     jump: DNAT
     to_destination: 192.168.123.100:3128
@@ -330,6 +346,7 @@
     chain: PREROUTING
     protocol: tcp
     match: tcp
+    destination: "{{ aio_host_ip_address }}"
     destination_port: "80"
     jump: DNAT
     to_destination: 192.168.123.11:80
@@ -342,6 +359,7 @@
     chain: PREROUTING
     protocol: tcp
     match: tcp
+    destination: "{{ aio_host_ip_address }}"
     destination_port: "443"
     jump: DNAT
     to_destination: 192.168.123.11:443
@@ -354,6 +372,7 @@
     chain: PREROUTING
     protocol: tcp
     match: tcp
+    destination: "{{ aio_host_ip_address }}"
     destination_port: "6443"
     jump: DNAT
     to_destination: 192.168.123.10:6443
@@ -377,6 +396,7 @@
     chain: PREROUTING
     protocol: tcp
     match: tcp
+    destination: "{{ aio_host_ip_address }}"
     destination_port: "8000"
     jump: DNAT
     to_destination: 192.168.123.100:22

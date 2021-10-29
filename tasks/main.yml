@@ -1,5 +1,5 @@
-- name: setting up base virt
-  import_tasks: base_virt.yml
+- name: setting up base virt for IPI
+  import_tasks: base_virt_ipi.yml
   when: ocp4_aio_deploy_type == 'upi' or ocp4_aio_deploy_type == 'ipi'
 
 - name: Setting up base virt for SNO

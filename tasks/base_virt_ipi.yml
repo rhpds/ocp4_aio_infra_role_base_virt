@@ -249,7 +249,7 @@
     permanent: yes
     state: enabled
   when:
-    - firewalld_avail.rc !=	4
+    - firewalld_avail.rc != 4
     - ocp4_aio_deploy_type == "ipi"
 
 - name: Enable port 9001 forwarding to bastion:9001 with firewalld

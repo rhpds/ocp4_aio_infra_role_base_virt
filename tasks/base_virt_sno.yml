@@ -106,7 +106,7 @@
     permanent: yes
     state: enabled
   when:
-    - firewalld_avail.rc !=	4
+    - firewalld_avail.rc != 4
 
 - name: Enable port 9001 forwarding to bastion:9001 with firewalld
   firewalld:

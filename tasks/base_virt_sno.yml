@@ -139,6 +139,7 @@
     chain: "{{ item }}"
     flush: yes
   with_items:  [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
+  become: true
   when:
     - firewalld_avail.rc == 4
 

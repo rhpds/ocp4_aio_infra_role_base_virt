@@ -146,8 +146,7 @@
   ansible.builtin.iptables:
     chain: LIBVIRT_FWO
     protocol: all
-    source: 192.168.123.0
-    destination: 0.0.0.0
+    source: 192.168.123.0/24
     jump: ACCEPT
     action: insert
     rule_num: 1
@@ -156,8 +155,7 @@
   ansible.builtin.iptables:
     chain: LIBVIRT_FWI
     protocol: all
-    source: 0.0.0.0
-    destination: 192.168.123.0
+    destination: 192.168.123.0/24
     jump: ACCEPT
     action: insert
     rule_num: 1

@@ -28,7 +28,7 @@
     name:
       - python3-virtualenv
     state: latest
-    nobest: yes
+    skip_broken: yes
   become: True
 
 - name: Get a list of current VM definitions

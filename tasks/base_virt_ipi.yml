@@ -178,6 +178,7 @@
   with_dict: "{{ vms['masters'] }}"
   when:
     - not ocp4_aio_deploy_ocp_plus
+    - not ocp4_aio_deploy_big_vms
     - ocp4_aio_deploy_type == "ipi"
     - vm_name not in vm_list.list_vms
 
@@ -193,7 +194,7 @@
     --boot hd,network --noautoconsole --vnc --name {{ vm_name }} --noreboot
   with_dict: "{{ vms['masters_opp'] }}"
   when:
-    - ocp4_aio_deploy_ocp_plus
+    - ocp4_aio_deploy_ocp_plus or ocp4_aio_deploy_big_vms
     - ocp4_aio_deploy_type == "ipi"
     - vm_name not in vm_list.list_vms
 
@@ -226,6 +227,7 @@
   with_dict: "{{ vms['workers'] }}"
   when:
     - not ocp4_aio_deploy_ocp_plus
+    - not ocp4_aio_deploy_big_vms
     - not ocp4_aio_deploy_compact
     - ocp4_aio_deploy_type == "ipi"
     - vm_name not in vm_list.list_vms
@@ -244,7 +246,7 @@
     --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --noreboot
   with_dict: "{{ vms['workers_opp'] }}"
   when:
-    - ocp4_aio_deploy_ocp_plus
+    - ocp4_aio_deploy_ocp_plus or ocp4_aio_deploy_big_vms
     - not ocp4_aio_deploy_compact
     - ocp4_aio_deploy_type == "ipi"
     - vm_name not in vm_list.list_vms

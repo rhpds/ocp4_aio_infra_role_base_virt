@@ -345,3 +345,12 @@
     insertbefore: '^nameserver.*'
     line: "nameserver 192.168.123.100"
     firstmatch: yes
+
+- name: Save iptables rules
+  ansible.builtin.shell: "iptables-save > /etc/sysconfig/iptables"
+  become: true
+  when: firewalld_avail.rc == 4
+
+- name: restart iptables
+  service: name=iptables state=restarted 
+  when: firewalld_avail.rc == 4

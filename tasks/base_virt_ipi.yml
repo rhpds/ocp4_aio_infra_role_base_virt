@@ -542,3 +542,12 @@
   register: nic_detach
   failed_when: nic_detach.rc > 1
   when: not ocp4_aio_deploy_compact
+
+- name: Save iptables rules
+  ansible.builtin.shell: "iptables-save > /etc/sysconfig/iptables"
+  become: true
+  when: firewalld_avail.rc == 4
+
+- name: restart iptables
+  service: name=iptables state=restarted 
+  when: firewalld_avail.rc == 4

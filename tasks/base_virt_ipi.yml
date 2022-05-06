@@ -569,10 +569,8 @@
   when: not ocp4_aio_deploy_compact
 
 - name: Save iptables rules
-  ansible.builtin.command: iptables-save
-  when: firewalld_avail.rc == 4
+  ansible.builtin.command: iptables-save > /etc/sysconfig/iptables
 
 - name: restart iptables
   service: name=iptables state=restarted 
-  when: firewalld_avail.rc == 4
   

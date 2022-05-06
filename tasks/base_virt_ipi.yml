@@ -1,6 +1,9 @@
 ---
 # vim: set ft=ansible:
 
+- name: restart libvirtd
+  service: name=libvirtd state=restarted 
+
 - name: Copy over virtual network definition files
   ansible.builtin.copy:
     src: "{{ item }}"
@@ -267,8 +270,6 @@
     - not ocp4_aio_deploy_compact
     - ocp4_aio_deploy_type == "upi"
     - vm_name not in vm_list.list_vms
-
-
 
 # - name: Enable firewalld ports for IPI deployments
 #   firewalld:
@@ -569,7 +570,7 @@
   when: not ocp4_aio_deploy_compact
 
 - name: Save iptables rules
-  ansible.builtin.command: iptables-save > /etc/sysconfig/iptables
+  ansible.builtin.shell: "iptables-save > /etc/sysconfig/iptables"
 
 - name: restart iptables
   service: name=iptables state=restarted 

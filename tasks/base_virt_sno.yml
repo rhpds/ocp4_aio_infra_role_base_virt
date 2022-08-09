@@ -259,7 +259,7 @@
     destination_port: "6443"
     jump: DNAT
     to_destination: 192.168.123.10:6443
-  when: firewalld_avail.rc == 4
+
 - name: Check if ssh-key already exists
   ansible.builtin.stat:
     path: "/root/.ssh/id_rsa"

@@ -88,53 +88,53 @@
     - bastion_defined.rc == 1
     - ocp4_aio_deploy_type == "sno"
 
-- name: Check if firewalld is available
-  ansible.builtin.command: systemctl status firewalld
-  register: firewalld_avail
-  failed_when: firewalld_avail.rc == 1
+# - name: Check if firewalld is available
+#   ansible.builtin.command: systemctl status firewalld
+#   register: firewalld_avail
+#   failed_when: firewalld_avail.rc == 1
 
-- name: Enable firewalld for IPI deployments
-  ansible.builtin.systemd:
-    name: firewalld
-    enabled: yes
-    state: started
-  when:
-    - firewalld_avail.rc < 4
+# - name: Enable firewalld for IPI deployments
+#   ansible.builtin.systemd:
+#     name: firewalld
+#     enabled: yes
+#     state: started
+#   when:
+#     - firewalld_avail.rc < 4
 
-- name: Enable firewalld ports for IPI deployments
-  firewalld:
-    port: 6230-6236/udp
-    zone: libvirt
-    permanent: yes
-    state: enabled
-  when:
-    - firewalld_avail.rc != 4
+# - name: Enable firewalld ports for IPI deployments
+#   firewalld:
+#     port: 6230-6236/udp
+#     zone: libvirt
+#     permanent: yes
+#     state: enabled
+#   when:
+#     - firewalld_avail.rc != 4
 
-- name: Enable port 9001 forwarding to bastion:9001 with firewalld
-  firewalld:
-    port_forward:
-      port: "9001"
-      proto: tcp
-      toaddr: 192.168.123.100
-      toport: "9001"
-    zone: public
-    permanent: yes
-    state: enabled
-  when:
-    - firewalld_avail.rc != 4
+# - name: Enable port 9001 forwarding to bastion:9001 with firewalld
+#   firewalld:
+#     port_forward:
+#       port: "9001"
+#       proto: tcp
+#       toaddr: 192.168.123.100
+#       toport: "9001"
+#     zone: public
+#     permanent: yes
+#     state: enabled
+#   when:
+#     - firewalld_avail.rc != 4
 
-- name: Enable port 8000 forwarding to bastion:22 with firewalld
-  firewalld:
-    port_forward:
-      port: "8000"
-      proto: tcp
-      toaddr: 192.168.123.100
-      toport: "22"
-    zone: public
-    permanent: yes
-    state: enabled
-  when:
-    - firewalld_avail.rc != 4
+# - name: Enable port 8000 forwarding to bastion:22 with firewalld
+#   firewalld:
+#     port_forward:
+#       port: "8000"
+#       proto: tcp
+#       toaddr: 192.168.123.100
+#       toport: "22"
+#     zone: public
+#     permanent: yes
+#     state: enabled
+#   when:
+#     - firewalld_avail.rc != 4
 
 - name: Iptables flush libvirt forward filter
   ansible.builtin.iptables:
@@ -142,8 +142,6 @@
     flush: yes
   with_items:  [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
   become: true
-  when:
-    - firewalld_avail.rc == 4
 
 - name: create default libvirt forward out rules
   ansible.builtin.iptables:
@@ -169,8 +167,6 @@
     protocol: udp
     destination_port: "6230:6236"
     jump: ACCEPT
-  when:
-    - firewalld_avail.rc == 4
 
 - name: Enable port 9001 on host with iptables
   ansible.builtin.iptables:
@@ -180,7 +176,6 @@
     rule_num: "1"
     destination_port: "9001"
     jump: ACCEPT
-  when: firewalld_avail.rc == 4
 
 - name: Forward port 9001 to bastion:9001 with iptables
   ansible.builtin.iptables:
@@ -194,7 +189,6 @@
     destination_port: "9001"
     jump: DNAT
     to_destination: 192.168.123.100:9001
-  when: firewalld_avail.rc == 4   
 
 - name: Enable port 8000 on host with iptables
   ansible.builtin.iptables:
@@ -204,7 +198,6 @@
     rule_num: "1"
     destination_port: "8000"
     jump: ACCEPT
-  when: firewalld_avail.rc == 4
 
 - name: Forward port 8000 to bastion:22 with iptables
   ansible.builtin.iptables:
@@ -218,7 +211,6 @@
     destination_port: "8000"
     jump: DNAT
     to_destination: 192.168.123.100:22
-  when: firewalld_avail.rc == 4   
 
 - name: Forward port 3128 to bastion:3128 with iptables
   ansible.builtin.iptables:
@@ -231,7 +223,6 @@
     destination_port: "3128"
     jump: DNAT
     to_destination: 192.168.123.100:3128
-  when: firewalld_avail.rc == 4
 
 - name: Forward port 80 to apps_vip:80 with iptables
   ansible.builtin.iptables:
@@ -244,7 +235,6 @@
     destination_port: "80"
     jump: DNAT
     to_destination: 192.168.123.10:80
-  when: firewalld_avail.rc == 4
 
 - name: Forward port 443 to apps_vip:443 with iptables
   ansible.builtin.iptables:
@@ -257,7 +247,6 @@
     destination_port: "443"
     jump: DNAT
     to_destination: 192.168.123.10:443
-  when: firewalld_avail.rc == 4
 
 - name: Forward port 6443 to api_vip:6443 with iptables
   ansible.builtin.iptables:
@@ -345,12 +334,3 @@
     insertbefore: '^nameserver.*'
     line: "nameserver 192.168.123.100"
     firstmatch: yes
-
-- name: Save iptables rules
-  ansible.builtin.shell: "iptables-save > /etc/sysconfig/iptables"
-  become: true
-  when: firewalld_avail.rc == 4
-
-- name: restart iptables
-  service: name=iptables state=restarted 
-  when: firewalld_avail.rc == 4

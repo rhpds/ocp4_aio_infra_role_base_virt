@@ -15,6 +15,20 @@
     - ocp4-net.xml
     - ocp4-prov-net.xml
 
+- name: create libvirt hooks dir
+  ansible.builtin.file:
+    path: /etc/libvirt/hooks
+    state: directory
+    mode: 0755
+
+- name: setup libvirt hook for network restart
+  ansible.builtin.copy:
+    src: network-hooks
+    dest: /etc/libvirt/hooks/network
+    owner: root
+    group: root
+    mode: 0744
+
 - name: Check if ocp4-net network is already configured
   ansible.builtin.command: virsh net-dumpxml ocp4-net
   register: ocp4_net_return
@@ -487,6 +501,18 @@
   failed_when: vbmc_return.rc > 1      
   when:
     ocp4_aio_deploy_type == "ipi"
+
+- name: Set VMs to autostart on reboot
+  ansible.builtin.command: "{{ item }}"
+  with_items: 
+    - "virsh autostart ocp4-bastion"
+    - "virsh autostart ocp4-master1"
+    - "virsh autostart ocp4-master2"
+    - "virsh autostart ocp4-master3"
+    - "virsh autostart ocp4-worker1"
+    - "virsh autostart ocp4-worker2"
+    - "virsh autostart ocp4-worker3"
+  when: bastion_defined.rc == 0
 
 - name: Check if ssh-key already exists
   ansible.builtin.stat:

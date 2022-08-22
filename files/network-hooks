@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$2" = "started" ] || [ "${2}" = "updated" ]; then
+        /sbin/iptables -F LIBVIRT_FWI || :
+        /sbin/iptables -F LIBVIRT_FWO || :
+        /sbin/iptables -A LIBVIRT_FWI -d 192.168.123.0/24 -p all -j ACCEPT || :
+        /sbin/iptables -A LIBVIRT_FWI -d 192.168.122.0/24 -p all -j ACCEPT || :
+        /sbin/iptables -A LIBVIRT_FWI -d 172.22.0.0/24 -p all -j ACCEPT || :
+        /sbin/iptables -A LIBVIRT_FWO -s 192.168.123.0/24 -p all -j ACCEPT || :
+        /sbin/iptables -A LIBVIRT_FWO -s 192.168.122.0/24 -p all -j ACCEPT || :
+        /sbin/iptables -A LIBVIRT_FWO -s 172.22.0.0/24 -p all -j ACCEPT || :
+fi

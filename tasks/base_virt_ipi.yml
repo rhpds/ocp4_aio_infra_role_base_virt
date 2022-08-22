@@ -512,7 +512,8 @@
     - "virsh autostart ocp4-worker1"
     - "virsh autostart ocp4-worker2"
     - "virsh autostart ocp4-worker3"
-  when: bastion_defined.rc == 0
+  when:
+    ocp4_aio_deploy_type == "ipi"
 
 - name: Check if ssh-key already exists
   ansible.builtin.stat:

@@ -279,7 +279,7 @@
     path: /root/lab
     state: directory
 
-- name: Make sno directory 
+- name: Make SNO directory
   ansible.builtin.file:
     path: /root/sno-{{ item }}
     state: directory
@@ -288,7 +288,7 @@
     - edge1
     - edge2
 
-- name: Make sno image directory 
+- name: Make SNO image directory
   ansible.builtin.file:
     path: /var/lib/libvirt/images/sno-{{ item }}
     state: directory

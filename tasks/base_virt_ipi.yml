@@ -2,7 +2,7 @@
 # vim: set ft=ansible:
 
 - name: restart libvirtd
-  service: name=libvirtd state=restarted 
+  service: name=libvirtd state=restarted
 
 - name: Copy over virtual network definition files
   ansible.builtin.copy:
@@ -103,7 +103,7 @@
     - "3-osd2"
   when: filename not in ocs_created.files
 
-- name: Check if base RHEL/CentOS 8 already disk image exists
+- name: Check if base RHEL/CentOS 8 disk image already exists
   stat:
     path: /var/lib/libvirt/images/centos8-kvm.qcow2
   register: base_result
@@ -498,22 +498,29 @@
     - "vbmc start ocp4-worker2"
     - "vbmc start ocp4-worker3"
   register: vbmc_return
-  failed_when: vbmc_return.rc > 1      
+  failed_when: vbmc_return.rc > 1
   when:
     ocp4_aio_deploy_type == "ipi"
 
-- name: Set VMs to autostart on reboot
+- name: Set bastion and master VMs to autostart on reboot
   ansible.builtin.command: "{{ item }}"
-  with_items: 
+  with_items:
     - "virsh autostart ocp4-bastion"
     - "virsh autostart ocp4-master1"
     - "virsh autostart ocp4-master2"
     - "virsh autostart ocp4-master3"
+  when:
+    ocp4_aio_deploy_type == "ipi"
+
+- name: Set worker VMs to autostart on reboot
+  ansible.builtin.command: "{{ item }}"
+  with_items:
     - "virsh autostart ocp4-worker1"
     - "virsh autostart ocp4-worker2"
     - "virsh autostart ocp4-worker3"
   when:
-    ocp4_aio_deploy_type == "ipi"
+    - ocp4_aio_deploy_type == "ipi"
+    - not ocp4_aio_deploy_compact
 
 - name: Check if ssh-key already exists
   ansible.builtin.stat:
@@ -600,5 +607,4 @@
   ansible.builtin.shell: "iptables-save > /etc/sysconfig/iptables"
 
 - name: restart iptables
-  service: name=iptables state=restarted 
-  
+  service: name=iptables state=restarted

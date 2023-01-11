@@ -240,7 +240,7 @@
     --network network:ocp4-provisioning,mac={{ item.value.prov_network }}
     --network network:ocp4-net,mac={{ item.value.base_network }}
     --network network:ocp4-net,mac={{ item.value.ext_network }}
-    --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --noreboot
+    --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --boot bios.rebootTimeout=0
   with_dict: "{{ vms['workers'] }}"
   when:
     - not ocp4_aio_deploy_ocp_plus
@@ -260,7 +260,7 @@
     --network network:ocp4-provisioning,mac={{ item.value.prov_network }}
     --network network:ocp4-net,mac={{ item.value.base_network }}
     --network network:ocp4-net,mac={{ item.value.ext_network }}
-    --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --noreboot
+    --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --boot bios.rebootTimeout=0
   with_dict: "{{ vms['workers_opp'] }}"
   when:
     - ocp4_aio_deploy_ocp_plus or ocp4_aio_deploy_big_vms

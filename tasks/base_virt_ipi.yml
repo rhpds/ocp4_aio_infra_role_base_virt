@@ -278,7 +278,7 @@
     --disk path=/var/lib/libvirt/images/ceph/ocp4-{{ item.key }}-osd2.qcow2,device=disk,bus=virtio,format=qcow2
     --network network:ocp4-net,mac={{ item.value.base_network }}
     --network network:ocp4-net,mac={{ item.value.ext_network }}
-    --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --noreboot
+    --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --boot bios.rebootTimeout=0 
   with_dict: "{{ vms['workers'] }}"
   when:
     - not ocp4_aio_deploy_compact

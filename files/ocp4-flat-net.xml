@@ -1,5 +1,5 @@
 <network>
-  <name>flat</name>
+  <name>ocp4-flat</name>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>

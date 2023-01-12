@@ -609,7 +609,7 @@
 - name: Remove additional extra NIC for masters when not compact
   ansible.builtin.command: >
     virsh detach-interface --domain ocp4-{{ item.key }} --type network
-    --mac={{ item.value.ext_network }} --config --persistent
+    --mac={{ item.value.flat_network }} --config --persistent
   with_dict: "{{ vms['masters'] }}"
   register: nic_detach
   failed_when: nic_detach.rc > 1

@@ -14,6 +14,7 @@
   loop:
     - ocp4-net.xml
     - ocp4-prov-net.xml
+    - ocp4-flat-net.xml
 
 - name: create libvirt hooks dir
   ansible.builtin.file:

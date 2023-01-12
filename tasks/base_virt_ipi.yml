@@ -57,6 +57,17 @@
   when:
     - ocp4_aio_deploy_type == "ipi"
     - ocp4_prov_return.rc == 1
+    
+    
+- name: Enable OpenShift flat network (192.168.3.0/24)
+  ansible.builtin.shell: "{{ item }}"
+  loop:
+    - "virsh net-define /tmp/ocp4-flat-net.xml"
+    - "virsh net-start ocp4-flat"
+    - "virsh net-autostart ocp4-flat"
+  when:
+    - ocp4_aio_deploy_type == "ipi"
+    - ocp4_prov_return.rc == 1    
 
 - name: Get a list of current VM definitions
   virt:

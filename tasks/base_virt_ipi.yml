@@ -184,13 +184,6 @@
     mode: 0644
   when: False and (not base_result.stat.exists)
 
-- name: Download bastion
-  ansible.builtin.get_url:
-    url: http://147.28.149.241/ocp4-bastion.qcow2
-    dest: /var/lib/libvirt/images/centos8-kvm.qcow2
-    mode: 0644
-  when: not base_result.stat.exists
-
 
 
 - name: Copy over ifcfg-eth0 for bastion VM
@@ -205,6 +198,15 @@
   stat:
     path: /var/lib/libvirt/images/ocp4-bastion.qcow2
   register: bastion_result
+
+- name: Download bastion
+  ansible.builtin.get_url:
+    url: http://147.28.149.241/ocp4-bastion.qcow2
+    dest: /var/lib/libvirt/images/ocp4-bastion.qcow2
+    mode: 0644
+  when: not bastion_result.stat.exists
+
+
 
 - name: Creating and customising Bastion VM image from CentOS 8 template
   ansible.builtin.shell: "{{ item }}"

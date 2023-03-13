@@ -189,7 +189,7 @@
     url: http://147.28.149.241/ocp4-bastion.qcow2
     dest: /var/lib/libvirt/images/centos8-kvm.qcow2
     mode: 0644
-  when: False and (not base_result.stat.exists)
+  when: not base_result.stat.exists
 
 
 

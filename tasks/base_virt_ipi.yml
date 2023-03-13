@@ -147,10 +147,10 @@
 - name: Create virtual disk images for OCS (even if not used) - don't clobber
   vars:
     filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
-  ansible.builtin.shell: "qemu-img create -f qcow2 {{ filename }} 100G"
+  #ansible.builtin.shell: "qemu-img create -f qcow2 {{ filename }} 100G"
   get_url:
-    url: "http://147.28.149.241/ceph/ocp4-worker{{ item }}.qcow2"
-    dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2
+    url: "http://147.28.149.241/ocp4-worker{{ item }}.qcow2"
+    dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   loop:
     - "1-osd1"
     - "1-osd2"
@@ -182,7 +182,16 @@
     url: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20220125.1.x86_64.qcow2
     dest: /var/lib/libvirt/images/centos8-kvm.qcow2
     mode: 0644
-  when: not base_result.stat.exists
+  when: False and (not base_result.stat.exists)
+
+- name: Download bastion
+  ansible.builtin.get_url:
+    url: http://147.28.149.241/ocp4-bastion.qcow2
+    dest: /var/lib/libvirt/images/centos8-kvm.qcow2
+    mode: 0644
+  when: False and (not base_result.stat.exists)
+
+
 
 - name: Copy over ifcfg-eth0 for bastion VM
   ansible.builtin.copy:
@@ -207,7 +216,7 @@
     - "virt-copy-in -a /var/lib/libvirt/images/ocp4-bastion.qcow2 /tmp/ifcfg-eth0 /etc/sysconfig/network-scripts"
     - "virt-customize -a /var/lib/libvirt/images/ocp4-bastion.qcow2 --run-command \"mkdir -p /root/.ssh/ && chmod -R 0700 /root/.ssh/\""
     - "virt-customize -a /var/lib/libvirt/images/ocp4-bastion.qcow2 --run-command \"restorecon -Rv /root/.ssh/\""
-  when: not bastion_result.stat.exists
+  when: False and (not bastion_result.stat.exists)
 
 - name: Check if Bastion is defined
   ansible.builtin.command: virsh dumpxml ocp4-bastion

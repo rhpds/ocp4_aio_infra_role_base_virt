@@ -87,7 +87,36 @@
     - "worker1"
     - "worker2"
     - "worker3"
+  when: False and (vm_name not in vm_list.list_vms)
+
+- name: Download files
+  vars:
+    vm_name: "ocp4-{{ item }}"
+  #ansible.builtin.shell: "qemu-img create -f qcow2 /var/lib/libvirt/images/ocp4-{{ item }}.qcow2 80G"
+  get_url:
+    url: "http://147.28.149.241/ocp4-{{ item }}.qcow2"
+    dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
+  loop:
+    - "bootstrap"
+    - "master1"
+    - "master2"
+    - "master3"
+    - "worker1"
+    - "worker2"
+    - "worker3"
+  register: _download_files
+  async: 600
+  poll: 0
   when: vm_name not in vm_list.list_vms
+
+- name: Wait for downloading files
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: _jobs
+  until: _jobs.finished
+  delay: 20
+  retries: 30
+  with_items: "{{ _download_files.results }}"
 
 - name: Get a list of currently defined OCS disks
   ansible.builtin.find:
@@ -113,7 +142,35 @@
     - "2-osd2"
     - "3-osd1"
     - "3-osd2"
+  when: False and (filename not in ocs_created.files)
+
+- name: Create virtual disk images for OCS (even if not used) - don't clobber
+  vars:
+    filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
+  ansible.builtin.shell: "qemu-img create -f qcow2 {{ filename }} 100G"
+  get_url:
+    url: "http://147.28.149.241/ceph/ocp4-worker{{ item }}.qcow2"
+    dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2
+  loop:
+    - "1-osd1"
+    - "1-osd2"
+    - "2-osd1"
+    - "2-osd2"
+    - "3-osd1"
+    - "3-osd2"
+  register: _download_files
+  async: 600
+  poll: 0
   when: filename not in ocs_created.files
+
+- name: Wait for downloading files
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  register: _jobs
+  until: _jobs.finished
+  delay: 20
+  retries: 30
+  with_items: "{{ _download_files.results }}"
 
 - name: Check if base RHEL/CentOS 8 disk image already exists
   stat:

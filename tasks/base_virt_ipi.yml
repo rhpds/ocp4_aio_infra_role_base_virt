@@ -92,7 +92,7 @@
   vars:
     vm_name: "ocp4-{{ item }}"
   get_url:
-    url: "http://147.28.149.241/ocp4-{{ item }}.qcow2"
+    url: "http://{{ aio_import_host }}/ocp4-{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
   loop:
     - "master1"
@@ -146,7 +146,7 @@
   vars:
     filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   get_url:
-    url: "http://147.28.149.241/ocp4-worker{{ item }}.qcow2"
+    url: "http://{{ aio_import_host }}/ocp4-worker{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   loop:
     - "1-osd1"
@@ -199,7 +199,7 @@
 
 - name: Download bastion
   ansible.builtin.get_url:
-    url: http://147.28.149.241/ocp4-bastion.qcow2
+    url: http://{{ aio_import_host }}/ocp4-bastion.qcow2
     dest: /var/lib/libvirt/images/ocp4-bastion.qcow2
     mode: 0644
   when: not build_lab|bool

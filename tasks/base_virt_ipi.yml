@@ -92,7 +92,7 @@
   vars:
     vm_name: "ocp4-{{ item }}"
   get_url:
-    url: "http://{{ aio_import_host }}/ocp4-{{ item }}.qcow2"
+    url: "{{ aio_import_url }}/ocp4-{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
   loop:
     - "master1"
@@ -146,7 +146,7 @@
   vars:
     filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   get_url:
-    url: "http://{{ aio_import_host }}/ocp4-worker{{ item }}.qcow2"
+    url: "{{ aio_import_url }}/ocp4-worker{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   loop:
     - "1-osd1"

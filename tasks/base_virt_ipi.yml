@@ -199,7 +199,7 @@
 
 - name: Download bastion
   ansible.builtin.get_url:
-    url: {{ aio_import_url }}/ocp4-bastion.qcow2
+    url: "{{ aio_import_url }}/ocp4-bastion.qcow2"
     dest: /var/lib/libvirt/images/ocp4-bastion.qcow2
     mode: 0644
   when: not build_lab|bool

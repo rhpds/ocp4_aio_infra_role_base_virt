@@ -71,7 +71,7 @@
     - ocp4_prov_return.rc == 1    
 
 - name: Get a list of current VM definitions
-  ansible.bultin.shell: virsh list --name
+  ansible.builtin.shell: virsh list --name
   register: vm_list
 
 - name: Create virtual disk images for nodes - don't clobber

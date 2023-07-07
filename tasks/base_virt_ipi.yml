@@ -103,7 +103,7 @@
   register: _download_files
   async: 900
   poll: 0
-  when: not build_lab|bool and (vm_name not in vm_list.list_vms)
+  when: not build_lab|bool and (vm_name not in vm_list.stdout_lines)
 
 - name: Wait for downloading files
   async_status:
@@ -261,7 +261,7 @@
     - not ocp4_aio_deploy_ocp_plus
     - not ocp4_aio_deploy_big_vms
     - ocp4_aio_deploy_type == "ipi"
-    - vm_name not in vm_list.list_vms
+    - vm_name not in vm_list.stdout_lines
 
 - name: Build Master VM definitions for Openshift Plus IPI
   vars:
@@ -277,7 +277,7 @@
   when:
     - ocp4_aio_deploy_ocp_plus or ocp4_aio_deploy_big_vms
     - ocp4_aio_deploy_type == "ipi"
-    - vm_name not in vm_list.list_vms
+    - vm_name not in vm_list.stdout_lines
 
 - name: Build Master VM definitions for UPI
   vars:
@@ -291,7 +291,7 @@
   with_dict: "{{ vms['masters'] }}"
   when:
     - ocp4_aio_deploy_type == "upi"
-    - vm_name not in vm_list.list_vms
+    - vm_name not in vm_list.stdout_lines
 
 - name: Build Worker VM definitions for IPI
   vars:
@@ -311,7 +311,7 @@
     - not ocp4_aio_deploy_big_vms
     - not ocp4_aio_deploy_compact
     - ocp4_aio_deploy_type == "ipi"
-    - vm_name not in vm_list.list_vms
+    - vm_name not in vm_list.stdout_lines
 
 - name: Build Worker VM definitions for IPI
   vars:
@@ -330,7 +330,7 @@
     - ocp4_aio_deploy_ocp_plus or ocp4_aio_deploy_big_vms
     - not ocp4_aio_deploy_compact
     - ocp4_aio_deploy_type == "ipi"
-    - vm_name not in vm_list.list_vms
+    - vm_name not in vm_list.stdout_lines
 
 - name: Build Worker VM definitions for UPI
   vars:
@@ -347,7 +347,7 @@
   when:
     - not ocp4_aio_deploy_compact
     - ocp4_aio_deploy_type == "upi"
-    - vm_name not in vm_list.list_vms
+    - vm_name not in vm_list.stdout_lines
 
 # - name: Enable firewalld ports for IPI deployments
 #   firewalld:

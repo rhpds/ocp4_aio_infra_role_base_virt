@@ -71,7 +71,7 @@
     - ocp4_prov_return.rc == 1    
 
 - name: Get a list of current VM definitions
-  virt:
+  community.libvirt.virt:
     command: list_vms
   register: vm_list
 
@@ -615,7 +615,7 @@
   when: not root_ssh_key.stat.exists
 
 - name: Remove the workers in a compact deployment when overridden
-  virt:
+  community.libvirt.virt:
     name: "ocp4-{{ item }}"
     command: undefine
   loop:

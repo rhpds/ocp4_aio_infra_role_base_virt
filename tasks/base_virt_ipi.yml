@@ -111,7 +111,7 @@
   register: _jobs
   until: _jobs.finished
   delay: 60
-  retries: 30
+  retries: 60
   when: not build_lab|bool
   with_items: "{{ _download_files.results }}"
 

@@ -71,8 +71,7 @@
     - ocp4_prov_return.rc == 1    
 
 - name: Get a list of current VM definitions
-  community.libvirt.virt:
-    command: list_vms
+  ansible.bultin.shell: virsh list --name
   register: vm_list
 
 - name: Create virtual disk images for nodes - don't clobber
@@ -86,7 +85,7 @@
     - "worker1"
     - "worker2"
     - "worker3"
-  when: build_lab|bool and (vm_name not in vm_list.list_vms)
+  when: build_lab|bool and (vm_name not in vm_list.stdout_lines)
 
 - name: Download files
   vars:
@@ -613,64 +612,6 @@
     state: present
     force: no
   when: not root_ssh_key.stat.exists
-
-- name: Remove the workers in a compact deployment when overridden
-  community.libvirt.virt:
-    name: "ocp4-{{ item }}"
-    command: undefine
-  loop:
-    - "worker1"
-    - "worker2"
-    - "worker3"
-  when:
-    - hostvars['localhost']['override_deploy_compact']
-    - not ocp4_aio_deploy_compact
-
-- name: Attach OCS disks to master nodes for compact mode (osd1)
-  ansible.builtin.command: >
-    virsh attach-disk ocp4-{{ item.key }} --source /var/lib/libvirt/images/ceph/ocp4-worker{{ my_idx | int + 1 }}-osd1.qcow2
-    --target vdb --type disk --targetbus virtio --driver qemu --subdriver qcow2 --persistent
-  with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
-  loop_control:
-    index_var: my_idx
-  register: osd_attach
-  failed_when: osd_attach.rc > 1
-
-- name: Attach OCS disks to master nodes for compact mode (osd2)
-  ansible.builtin.command: >
-    virsh attach-disk ocp4-{{ item.key }} --source /var/lib/libvirt/images/ceph/ocp4-worker{{ my_idx | int + 1 }}-osd2.qcow2
-    --target vdc --type disk --targetbus virtio --driver qemu --subdriver qcow2 --persistent
-  with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
-  loop_control:
-    index_var: my_idx
-  register: osd_attach
-  failed_when: osd_attach.rc > 1
-
-- name: Update master max memory for compact mode
-  ansible.builtin.command:
-    cmd: "virsh setmaxmem ocp4-{{ item.key }} 33554415 --config"
-  with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
-
-- name: Update master memory for compact mode
-  ansible.builtin.command:
-    cmd: "virsh setmem ocp4-{{ item.key }} 33554415 --config"
-  with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
-
-- name: Update master max vcpus for compact mode
-  ansible.builtin.command:
-    cmd: "virsh setvcpus --maximum ocp4-{{ item.key }} 16 --config"
-  with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
-
-- name: Update master vcpus for compact mode
-  ansible.builtin.command:
-    cmd: "virsh setvcpus ocp4-{{ item.key }} 16 --config"
-  with_dict: "{{ vms['masters'] }}"
-  when: ocp4_aio_deploy_compact or hostvars['localhost']['override_deploy_compact']
 
 - name: Remove additional extra NIC for masters when not compact
   ansible.builtin.command: >

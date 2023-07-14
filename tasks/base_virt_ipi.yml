@@ -95,6 +95,7 @@
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
     url_username: "{{ download_user | default(omit) }}"
     url_password: "{{ download_password | default(omit) }}"
+    force_basic_auth: True
   loop:
     - "master1"
     - "master2"
@@ -151,6 +152,7 @@
     dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
     url_username: "{{ download_user | default(omit) }}"
     url_password: "{{ download_password | default(omit) }}"
+    force_basic_auth: True
   loop:
     - "1-osd1"
     - "1-osd2"

@@ -110,8 +110,8 @@
   vars:
     vm_name: "ocp4-{{ item }}"
   amazon.aws.s3_object:
-    access_key: "{{ agnosticd_output_dir_s3_access_key_id }}"
-    secret_key: "{{ agnosticd_output_dir_s3_secret_access_key }}"
+    access_key: "{{ agnosticd_save_output_dir_s3_access_key_id }}"
+    secret_key: "{{ agnosticd_save_output_dir_s3_secret_access_key }}"
     bucket: rhdp-private
     object: "roadshowocpvirt/ocp4-{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
@@ -188,8 +188,8 @@
   vars:
     filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   amazon.aws.s3_object:
-      access_key: "{{ agnosticd_output_dir_s3_access_key_id }}"
-      secret_key: "{{ agnosticd_output_dir_s3_secret_access_key }}"
+      access_key: "{{ agnosticd_save_output_dir_s3_access_key_id }}"
+      secret_key: "{{ agnosticd_save_output_dir_s3_secret_access_key }}"
       bucket: rhdp-private
       object: "roadshowocpvirt/ocp4-worker{{ item }}.qcow2"
       dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"

@@ -284,6 +284,13 @@
     - bastion_defined.rc == 1
     - ocp4_aio_deploy_type == "ipi"
 
+- name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+  ansible.builtin.wait_for:
+    port: 22
+    host: '192.168.123.100'
+    search_regex: OpenSSH
+    delay: 10
+
 - name: Build Master VM definitions for IPI
   vars:
     vm_name: "ocp4-{{ item.key }}"

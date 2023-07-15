@@ -107,32 +107,6 @@
   poll: 0
   when: not build_lab|bool and (vm_name not in vm_list.stdout_lines) and cloud_provider == 'equinix_metal'
 
-- name: install boto3
-  command: pip3 install boto3
-  when: cloud_provider == 'ec2'
-
-
-- name: Download files
-  vars:
-    vm_name: "ocp4-{{ item }}"
-  amazon.aws.s3_object:
-    access_key: "{{ s3_access_key }}"
-    secret_key: "{{ s3_secret_access }}"
-    bucket: rhdp-private
-    object: "roadshowocpvirt/ocp4-{{ item }}.qcow2"
-    dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
-    mode: get
-  loop:
-    - "master1"
-    - "master2"
-    - "master3"
-    - "worker1"
-    - "worker2"
-    - "worker3"
-    - "bastion"
-  when: not build_lab|bool and (vm_name not in vm_list.stdout_lines) and cloud_provider == 'ec2'
-
-
 - name: Wait for downloading files
   async_status:
     jid: "{{ item.ansible_job_id }}"
@@ -142,6 +116,31 @@
   retries: 60
   when: not build_lab|bool and cloud_provider == 'equinix_metal'
   with_items: "{{ _download_files.results }}"
+
+- name: Download files fro S3
+  when: cloud_provider == 'ec2'
+  block:
+    - name: install boto3
+      command: pip3 install boto3
+    - name: Download files
+      vars:
+        vm_name: "ocp4-{{ item }}"
+      amazon.aws.s3_object:
+        access_key: "{{ s3_access_key }}"
+        secret_key: "{{ s3_secret_access }}"
+        bucket: rhdp-private
+        object: "roadshowocpvirt/ocp4-{{ item }}.qcow2"
+        dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
+        mode: get
+      loop:
+        - "master1"
+        - "master2"
+        - "master3"
+        - "worker1"
+        - "worker2"
+        - "worker3"
+        - "bastion"
+      when: not build_lab|bool and (vm_name not in vm_list.stdout_lines)
 
 - name: Get a list of currently defined OCS disks
   ansible.builtin.find:
@@ -187,28 +186,6 @@
   poll: 0
   when: build_lab|bool == false and (filename not in ocs_created.files) and cloud_provider == 'equinix_metal'
 
-- name: Create virtual disk images for OCS (even if not used) - don't clobber
-  vars:
-    filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
-  amazon.aws.s3_object:
-      access_key: "{{ s3_access_key }}"
-      secret_key: "{{ s3_secret_access }}"
-      bucket: rhdp-private
-      object: "roadshowocpvirt/ocp4-worker{{ item }}.qcow2"
-      dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
-      mode: get
-  loop:
-    - "1-osd1"
-    - "1-osd2"
-    - "2-osd1"
-    - "2-osd2"
-    - "3-osd1"
-    - "3-osd2"
-  when: build_lab|bool == false and (filename not in ocs_created.files) and cloud_provider == 'ec2'
-
-
-
-
 - name: Wait for downloading files
   async_status:
     jid: "{{ item.ansible_job_id }}"
@@ -218,6 +195,28 @@
   retries: 30
   when: not build_lab|bool and cloud_provider == 'equinix_metal'
   with_items: "{{ _download_files.results }}"
+
+- name: Download files fro S3
+  when: cloud_provider == 'ec2'
+  block:
+    - name: Create virtual disk images for OCS (even if not used) - don't clobber
+      vars:
+        filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
+      amazon.aws.s3_object:
+          access_key: "{{ s3_access_key }}"
+          secret_key: "{{ s3_secret_access }}"
+          bucket: rhdp-private
+          object: "roadshowocpvirt/ocp4-worker{{ item }}.qcow2"
+          dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
+          mode: get
+      loop:
+        - "1-osd1"
+        - "1-osd2"
+        - "2-osd1"
+        - "2-osd2"
+        - "3-osd1"
+        - "3-osd2"
+      when: build_lab|bool == false and (filename not in ocs_created.files)
 
 - name: Check if base RHEL/CentOS 8 disk image already exists
   stat:

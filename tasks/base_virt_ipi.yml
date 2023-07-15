@@ -279,7 +279,7 @@
     --disk path=/var/lib/libvirt/images/ocp4-bastion.qcow2,device=disk,bus=virtio,format=qcow2
     --network network:ocp4-net,mac={{ vms.bastion.base_network }}
     --network network:ocp4-provisioning,mac={{ vms.bastion.prov_network }}
-    --boot hd --noautoconsole --vnc --name ocp4-bastion
+    --boot hd --noautoconsole --vnc --name ocp4-bastion --boot bios.rebootTimeout=0
   when:
     - bastion_defined.rc == 1
     - ocp4_aio_deploy_type == "ipi"

@@ -279,17 +279,10 @@
     --disk path=/var/lib/libvirt/images/ocp4-bastion.qcow2,device=disk,bus=virtio,format=qcow2
     --network network:ocp4-net,mac={{ vms.bastion.base_network }}
     --network network:ocp4-provisioning,mac={{ vms.bastion.prov_network }}
-    --boot hd --noautoconsole --vnc --name ocp4-bastion --boot bios.rebootTimeout=0
+    --boot hd --noautoconsole --vnc --name ocp4-bastion
   when:
     - bastion_defined.rc == 1
     - ocp4_aio_deploy_type == "ipi"
-
-- name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
-  ansible.builtin.wait_for:
-    port: 22
-    host: '192.168.123.100'
-    search_regex: OpenSSH
-    delay: 10
 
 - name: Build Master VM definitions for IPI
   vars:

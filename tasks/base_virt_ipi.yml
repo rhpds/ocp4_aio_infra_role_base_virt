@@ -107,7 +107,7 @@
   when: not build_lab|bool and (vm_name not in vm_list.stdout_lines) and cloud_provider == 'equinix_metal'
 
 - name: install boto3
-  command: pip install boto3
+  command: pip3 install boto3
   when: cloud_provider == 'ec2'
 
 

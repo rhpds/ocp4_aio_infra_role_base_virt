@@ -85,6 +85,7 @@
     - "worker1"
     - "worker2"
     - "worker3"
+    - "bastion"
   when: build_lab|bool and (vm_name not in vm_list.stdout_lines)
 
 - name: Download files

@@ -130,9 +130,6 @@
     - "worker2"
     - "worker3"
     - "bastion"
-  register: _download_files
-  async: 900
-  poll: 0
   when: not build_lab|bool and (vm_name not in vm_list.stdout_lines) and cloud_provider == 'ec2'
 
 
@@ -143,7 +140,7 @@
   until: _jobs.finished
   delay: 60
   retries: 60
-  when: not build_lab|bool
+  when: not build_lab|bool and cloud_provider == 'equinix_metal'
   with_items: "{{ _download_files.results }}"
 
 - name: Get a list of currently defined OCS disks
@@ -207,9 +204,6 @@
     - "2-osd2"
     - "3-osd1"
     - "3-osd2"
-  register: _download_files
-  async: 600
-  poll: 0
   when: build_lab|bool == false and (filename not in ocs_created.files) and cloud_provider == 'ec2'
 
 
@@ -222,7 +216,7 @@
   until: _jobs.finished
   delay: 20
   retries: 30
-  when: not build_lab|bool
+  when: not build_lab|bool and cloud_provider == 'equinix_metal'
   with_items: "{{ _download_files.results }}"
 
 - name: Check if base RHEL/CentOS 8 disk image already exists

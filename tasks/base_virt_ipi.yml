@@ -85,7 +85,6 @@
     - "worker1"
     - "worker2"
     - "worker3"
-    - "bastion"
   when: build_lab|bool and (vm_name not in vm_list.stdout_lines)
 
 - name: Download files
@@ -228,7 +227,7 @@
     --network network:ocp4-provisioning,mac={{ vms.bastion.prov_network }}
     --boot hd --noautoconsole --vnc --name ocp4-bastion --boot bios.rebootTimeout=0
   when:
-    - bastion_defined.rc == 1
+    - bation_defined.rc == 1
     - ocp4_aio_deploy_type == "ipi"
 
 - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"

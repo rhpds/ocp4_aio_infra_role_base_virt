@@ -422,6 +422,24 @@
     action: insert
     rule_num: 1
 
+- name: create default libvirt forward out rules (flat)
+  ansible.builtin.iptables:
+    chain: LIBVIRT_FWO
+    protocol: all
+    source: 192.168.3.0/24
+    jump: ACCEPT
+    action: insert
+    rule_num: 1
+
+- name: create default libvirt forward in rules (flat)
+  ansible.builtin.iptables:
+    chain: LIBVIRT_FWI
+    protocol: all
+    destination: 192.168.3.0/24
+    jump: ACCEPT
+    action: insert
+    rule_num: 1
+
 - name: Enable iptables ports for IPI deployments
   ansible.builtin.iptables:
     chain: LIBVIRT_INP

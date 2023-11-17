@@ -102,6 +102,7 @@
   get_url:
     url: "{{ aio_import_url | replace('us-east', server_region) }}-{{ server_region }}/ocp4-{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
+    timeout: 1800
   loop:
     - "master1"
     - "master2"
@@ -111,7 +112,7 @@
     - "worker3"
     - "bastion"
   register: _download_files
-  async: 900
+  async: 1800
   poll: 0
   when: not build_lab|bool and (vm_name not in vm_list.stdout_lines) and cloud_provider == 'equinix_metal'
 
@@ -120,7 +121,7 @@
     jid: "{{ item.ansible_job_id }}"
   register: _jobs
   until: _jobs.finished
-  delay: 60
+  delay: 30
   retries: 60
   when: not build_lab|bool and cloud_provider == 'equinix_metal'
   with_items: "{{ _download_files.results }}"

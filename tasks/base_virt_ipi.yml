@@ -1,6 +1,15 @@
 ---
 # vim: set ft=ansible:
 
+- name: Query the Equinix metadata endpoint
+  ansible.builtin.uri: 
+    url: https://metadata.platformequinix.com/metadata
+  register: r_metadata
+
+- name: Set a variable for the server region (us, eu, ap)
+  set_fact: 
+    server_region: "{{ regions[r_metadata.json.metro] | default('us') }}"
+
 - name: restart libvirtd
   service: name=libvirtd state=restarted
 
@@ -141,12 +150,6 @@
     - "3-osd1"
     - "3-osd2"
   when: build_lab|bool and (filename not in ocs_created.files)
-
-- ansible.builtin.uri: 
-    url: https://metadata.platformequinix.com/metadata
-  register: r_metadata
-- set_fact: 
-    server_region: "{{ regions[r_metadata.json.metro] | default('us') }}"
 
 
 - name: Create virtual disk images for OCS (even if not used) - don't clobber

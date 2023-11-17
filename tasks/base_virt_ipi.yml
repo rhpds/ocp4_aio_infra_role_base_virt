@@ -1,6 +1,15 @@
 ---
 # vim: set ft=ansible:
 
+- name: Query the Equinix metadata endpoint
+  ansible.builtin.uri: 
+    url: https://metadata.platformequinix.com/metadata
+  register: r_metadata
+
+- name: Set a variable for the server region (us, eu, ap)
+  set_fact: 
+    server_region: "{{ regions[r_metadata.json.metro] | default('us') }}"
+
 - name: restart libvirtd
   service: name=libvirtd state=restarted
 
@@ -91,7 +100,7 @@
   vars:
     vm_name: "ocp4-{{ item }}"
   get_url:
-    url: "{{ aio_import_url }}/ocp4-{{ item }}.qcow2"
+    url: "{{ aio_import_url | replace('us-east', server_region) }}-{{ server_region }}/ocp4-{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
     timeout: 1800
   loop:
@@ -143,11 +152,12 @@
     - "3-osd2"
   when: build_lab|bool and (filename not in ocs_created.files)
 
+
 - name: Create virtual disk images for OCS (even if not used) - don't clobber
   vars:
     filename: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   get_url:
-    url: "{{ aio_import_url }}/ocp4-worker{{ item }}.qcow2"
+    url: "{{ aio_import_url | replace('us-east', server_region) }}-{{ server_region }}/ocp4-worker{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ceph/ocp4-worker{{ item }}.qcow2"
   loop:
     - "1-osd1"

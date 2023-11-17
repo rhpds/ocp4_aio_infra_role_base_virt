@@ -107,3 +107,32 @@ vms:
       mem: 32768
       cpus: 16
       base_network: "ba:dc:0f:fe:ee:04"
+
+regions:
+  sp: us
+  mt: us
+  tr: us
+  at: us
+  ch: us
+  da: us
+  la: us
+  mi: us
+  ny: us
+  se: us
+  sv: us
+  dc: us
+  he: eu
+  pa: eu
+  fr: eu
+  am: eu
+  md: eu
+  sk: eu
+  ld: eu
+  ma: eu
+  me: ap
+  sy: ap
+  hk: ap
+  os: ap
+  ty: ap
+  sl: ap
+  sg: ap

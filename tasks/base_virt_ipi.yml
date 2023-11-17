@@ -100,7 +100,7 @@
   vars:
     vm_name: "ocp4-{{ item }}"
   get_url:
-    url: "{{ aio_import_url | replace('us-east', server_region) }}/ocp4-{{ item }}.qcow2"
+    url: "{{ aio_import_url | replace('us-east', server_region) }}-{{ server_region }}/ocp4-{{ item }}.qcow2"
     dest: "/var/lib/libvirt/images/ocp4-{{ item }}.qcow2"
   loop:
     - "master1"

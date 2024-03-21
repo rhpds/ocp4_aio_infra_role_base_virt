@@ -94,7 +94,7 @@
     - "worker1"
     - "worker2"
     - "worker3"
-    - "newhost1"
+    - "worker4"
   when: build_lab|bool and (vm_name not in vm_list.stdout_lines)
 
 - name: Get a list of currently defined OCS disks
@@ -121,8 +121,8 @@
     - "2-osd2"
     - "3-osd1"
     - "3-osd2"
-    - "newhost1-osd1"
-    - "newhost1-osd2"
+    - "4-osd1"
+    - "4-osd2"
   when: build_lab|bool and (filename not in ocs_created.files)
 
 - name: Check if base RHEL/CentOS 8 disk image already exists

@@ -48,7 +48,7 @@ vms:
       base_network: "52:54:00:00:00:06"
       flat_network: "52:54:00:00:01:06"
       prov_network: "de:ad:be:ef:00:06"
-    newhost1:
+    worker4:
       mem: 16384
       cpus: 16
       base_network: "52:54:00:00:00:07"

@@ -335,7 +335,7 @@
     - "vbmc add --username admin --password redhat --port 6234 --address 192.168.123.1 --libvirt-uri qemu:///system ocp4-worker1"
     - "vbmc add --username admin --password redhat --port 6235 --address 192.168.123.1 --libvirt-uri qemu:///system ocp4-worker2"
     - "vbmc add --username admin --password redhat --port 6236 --address 192.168.123.1 --libvirt-uri qemu:///system ocp4-worker3"
-    - "vbmc add --username admin --password redhat --port 6237 --address 192.168.123.1 --libvirt-uri qemu:///system ocp4-newhost1"
+    - "vbmc add --username admin --password redhat --port 6237 --address 192.168.123.1 --libvirt-uri qemu:///system ocp4-worker4"
     - "vbmc start ocp4-bastion"
     - "vbmc start ocp4-master1"
     - "vbmc start ocp4-master2"
@@ -343,7 +343,7 @@
     - "vbmc start ocp4-worker1"
     - "vbmc start ocp4-worker2"
     - "vbmc start ocp4-worker3"
-    - "vbmc start ocp4-newhost1"
+    - "vbmc start ocp4-worker4"
   register: vbmc_return
   failed_when: vbmc_return.rc > 1
   when:

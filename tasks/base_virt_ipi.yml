@@ -254,7 +254,7 @@
   ansible.builtin.iptables:
     chain: LIBVIRT_INP
     protocol: udp
-    destination_port: "6230:6236"
+    destination_port: "6230:6237"
     jump: ACCEPT
   when:
     - ocp4_aio_deploy_type == "ipi"

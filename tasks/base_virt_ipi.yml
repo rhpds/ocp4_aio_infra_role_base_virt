@@ -2,12 +2,12 @@
 # vim: set ft=ansible:
 
 - name: Query the Equinix metadata endpoint
-  ansible.builtin.uri: 
+  ansible.builtin.uri:
     url: https://metadata.platformequinix.com/metadata
   register: r_metadata
 
 - name: Set a variable for the server region (us, eu, ap)
-  set_fact: 
+  set_fact:
     server_region: "{{ regions[r_metadata.json.metro] | default('us') }}"
 
 - name: restart libvirtd
@@ -67,8 +67,8 @@
   when:
     - ocp4_aio_deploy_type == "ipi"
     - ocp4_prov_return.rc == 1
-    
-    
+
+
 - name: Enable OpenShift flat network (192.168.3.0/24)
   ansible.builtin.shell: "{{ item }}"
   loop:
@@ -77,7 +77,7 @@
     - "virsh net-autostart ocp4-flat"
   when:
     - ocp4_aio_deploy_type == "ipi"
-    - ocp4_prov_return.rc == 1    
+    - ocp4_prov_return.rc == 1
 
 - name: Get a list of current VM definitions
   ansible.builtin.shell: virsh list --name
@@ -290,6 +290,7 @@
     destination_port: "3128"
     jump: DNAT
     to_destination: 192.168.123.100:3128
+
 - name: Enable port 8000 on host with iptables
   ansible.builtin.iptables:
     chain: FORWARD
@@ -365,6 +366,7 @@
     - "virsh autostart ocp4-worker1"
     - "virsh autostart ocp4-worker2"
     - "virsh autostart ocp4-worker3"
+    - "virsh autostart ocp4-worker4"
   when:
     - ocp4_aio_deploy_type == "ipi"
     - not ocp4_aio_deploy_compact

@@ -125,16 +125,16 @@
     - "4-osd2"
   when: build_lab|bool and (filename not in ocs_created.files)
 
-- name: Check if base RHEL/CentOS 8 disk image already exists
-  stat:
-    path: /var/lib/libvirt/images/centos8-kvm.qcow2
+- name: Check if base RHEL/CentOS disk image already exists
+  ansible.builtin.stat:
+    path: /var/lib/libvirt/images/centos9-kvm.qcow2
   register: base_result
 
-- name: Downloading CentOS 8 base image
+- name: Downloading CentOS base image
   ansible.builtin.get_url:
-    url: https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20230501.0.x86_64.qcow2
-    dest: /var/lib/libvirt/images/centos8-kvm.qcow2
-    mode: 0644
+    url: "{{ centos_image }}"
+    dest: /var/lib/libvirt/images/centos9-kvm.qcow2
+    mode: "0644"
   when: not base_result.stat.exists
 
 - name: Copy over ifcfg-eth0 for bastion VM
@@ -143,18 +143,18 @@
     dest: "/tmp"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: Check if Bastion disk image already exists - don't clobber
-  stat:
+  ansible.builtin.stat:
     path: /var/lib/libvirt/images/ocp4-bastion.qcow2
   register: bastion_result
 
 - name: Creating and customising Bastion VM image from CentOS 8 template
   ansible.builtin.shell: "{{ item }}"
   loop:
-    - "qemu-img create -f qcow2 /var/lib/libvirt/images/ocp4-bastion.qcow2 -b /var/lib/libvirt/images/centos8-kvm.qcow2 -F qcow2 200G"
-    - "virt-resize --expand /dev/sda1 /var/lib/libvirt/images/centos8-kvm.qcow2 /var/lib/libvirt/images/ocp4-bastion.qcow2"
+    - "qemu-img create -f qcow2 /var/lib/libvirt/images/ocp4-bastion.qcow2 -b /var/lib/libvirt/images/centos9-kvm.qcow2 -F qcow2 200G"
+    - "virt-resize --expand /dev/sda1 /var/lib/libvirt/images/centos9-kvm.qcow2 /var/lib/libvirt/images/ocp4-bastion.qcow2"
     - "virt-customize -a /var/lib/libvirt/images/ocp4-bastion.qcow2 --uninstall cloud-init"
     - "virt-customize -a /var/lib/libvirt/images/ocp4-bastion.qcow2 --root-password password:redhat"
     - "virt-copy-in -a /var/lib/libvirt/images/ocp4-bastion.qcow2 /tmp/ifcfg-eth0 /etc/sysconfig/network-scripts"
@@ -210,11 +210,11 @@
 - name: Iptables flush libvirt forward filter
   ansible.builtin.iptables:
     chain: "{{ item }}"
-    flush: yes
-  with_items:  [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
+    flush: true
+  with_items: [ 'LIBVIRT_FWO', 'LIBVIRT_FWI' ]
   become: true
 
-- name: create default libvirt forward out rules
+- name: Create default libvirt forward out rules
   ansible.builtin.iptables:
     chain: LIBVIRT_FWO
     protocol: all
@@ -223,7 +223,7 @@
     action: insert
     rule_num: 1
 
-- name: create default libvirt forward in rules
+- name: Create default libvirt forward in rules
   ansible.builtin.iptables:
     chain: LIBVIRT_FWI
     protocol: all
@@ -232,7 +232,7 @@
     action: insert
     rule_num: 1
 
-- name: create default libvirt forward out rules (flat)
+- name: Create default libvirt forward out rules (flat)
   ansible.builtin.iptables:
     chain: LIBVIRT_FWO
     protocol: all
@@ -241,7 +241,7 @@
     action: insert
     rule_num: 1
 
-- name: create default libvirt forward in rules (flat)
+- name: Create default libvirt forward in rules (flat)
   ansible.builtin.iptables:
     chain: LIBVIRT_FWI
     protocol: all

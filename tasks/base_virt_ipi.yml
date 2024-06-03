@@ -150,7 +150,7 @@
     path: /var/lib/libvirt/images/ocp4-bastion.qcow2
   register: bastion_result
 
-- name: Creating and customising Bastion VM image from CentOS 8 template
+- name: Creating and customising Bastion VM image from CentOS template
   ansible.builtin.shell: "{{ item }}"
   loop:
     - "qemu-img create -f qcow2 /var/lib/libvirt/images/ocp4-bastion.qcow2 -b /var/lib/libvirt/images/centos9-kvm.qcow2 -F qcow2 200G"

@@ -164,7 +164,7 @@
 
 - name: Build Bastion VM definition for IPI
   ansible.builtin.command: >
-    virt-install --virt-type kvm --ram {{ vms.bastion.mem }} --vcpus {{ vms.bastion.cpus }} --cpu=host-passthrough --os-variant rhel8.1
+    virt-install --virt-type kvm --ram {{ vms.bastion.mem }} --vcpus {{ vms.bastion.cpus }} --cpu=host-passthrough --os-variant rhel9.0
     --disk path=/var/lib/libvirt/images/ocp4-bastion.qcow2,device=disk,bus=virtio,format=qcow2
     --network network:ocp4-net,mac={{ vms.bastion.base_network }}
     --network network:ocp4-provisioning,mac={{ vms.bastion.prov_network }}
@@ -181,7 +181,7 @@
   vars:
     vm_name: "ocp4-{{ item.key }}"
   ansible.builtin.command: >
-    virt-install --virt-type kvm --ram {{ item.value.mem }} --vcpus {{ item.value.cpus }} --cpu=host-passthrough --os-variant rhel8.1
+    virt-install --virt-type kvm --ram {{ item.value.mem }} --vcpus {{ item.value.cpus }} --cpu=host-passthrough --os-variant rhel9.0
     --disk path=/var/lib/libvirt/images/ocp4-{{ item.key }}.qcow2,device=disk,bus=virtio,format=qcow2
     --network network:ocp4-provisioning,mac={{ item.value.prov_network }}
     --network network:ocp4-net,mac={{ item.value.base_network }}
@@ -189,13 +189,13 @@
     --boot hd,network --noautoconsole --vnc --name {{ vm_name }} --boot bios.rebootTimeout=0
   with_dict: "{{ vms['masters_opp'] }}"
   when:
-    - vm_name not in vm_list.stdout_lines
+  - vm_name not in vm_list.stdout_lines
 
 - name: Build Worker VM definitions for IPI
   vars:
     vm_name: "ocp4-{{ item.key }}"
   ansible.builtin.command: >
-    virt-install --virt-type kvm --ram {{ item.value.mem }} --vcpus {{ item.value.cpus }} --cpu=host-passthrough --os-variant rhel8.1
+    virt-install --virt-type kvm --ram {{ item.value.mem }} --vcpus {{ item.value.cpus }} --cpu=host-passthrough --os-variant rhel9.0
     --disk path=/var/lib/libvirt/images/ocp4-{{ item.key }}.qcow2,device=disk,bus=virtio,format=qcow2
     --disk path=/var/lib/libvirt/images/ceph/ocp4-{{ item.key }}-osd1.qcow2,device=disk,bus=virtio,format=qcow2
     --disk path=/var/lib/libvirt/images/ceph/ocp4-{{ item.key }}-osd2.qcow2,device=disk,bus=virtio,format=qcow2
@@ -205,7 +205,7 @@
     --boot hd,network --noautoconsole --vnc --name ocp4-{{ item.key }} --boot bios.rebootTimeout=0
   with_dict: "{{ vms['workers_opp'] }}"
   when:
-    - vm_name not in vm_list.stdout_lines
+  - vm_name not in vm_list.stdout_lines
 
 - name: Iptables flush libvirt forward filter
   ansible.builtin.iptables:
